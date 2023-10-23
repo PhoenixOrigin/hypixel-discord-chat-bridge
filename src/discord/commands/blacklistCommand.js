@@ -4,7 +4,7 @@ const config = require("../../../config.json");
 
 module.exports = {
   name: "blacklist",
-  description: "Demotes the given user by one guild rank.",
+  description: "Ignore add / remove user.",
   options: [
     {
       name: "arg",
