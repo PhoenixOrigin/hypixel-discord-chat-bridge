@@ -1,19 +1,41 @@
 const axios = require("axios");
 
+const cache = new Map();
+
 async function getUUID(username) {
   try {
+    if (cache.has(username)) {
+      const data = cache.get(username);
+
+      if (data.last_save + 43200000 > Date.now()) {
+        return data.id;
+      }
+    }
+
     const { data } = await axios.get(`https://api.mojang.com/users/profiles/minecraft/${username}`);
 
     if (data.errorMessage || data.id === undefined) {
       throw data.errorMessage ?? "Invalid username.";
     }
 
+    cache.set(username, {
+      last_save: Date.now(),
+      id: data.id,
+    });
+
     return data.id;
   } catch (error) {
-    console.log(error);
-    throw error?.response?.data?.errorMessage === `Couldn't find any profile with name ${username}`
-      ? "Invalid username."
-      : error?.response?.data?.errorMessage ?? "Request to Mojang API failed. Please try again!";
+    if (error.response.data.errorMessage !== undefined) {
+      throw error.response.data.errorMessage === `Couldn't find any profile with name ${username}`
+        ? "Invalid username."
+        : error.response.data.errorMessage ===
+          "getProfileName.name: Invalid profile name, getProfileName.name: size must be between 1 and 25"
+        ? "Invalid username."
+        : error.response.data.errorMessage;
+    }
+
+    // eslint-disable-next-line no-throw-literal
+    throw "Request to Mojang API failed. Please try again!";
   }
 }
 

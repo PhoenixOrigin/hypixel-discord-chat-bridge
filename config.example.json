@@ -2,7 +2,7 @@
   "minecraft": {
     "bot": {
       "prefix": "!",
-      "messageFormat": " »",
+      "messageFormat": "{username} » {message}",
       "messageRepeatBypassLength": 24
     },
     "commands": {
@@ -65,6 +65,12 @@
       "customTime": {
         "2": ["BANK_INTEREST", "DARK_AUCTION", "JACOBS_CONTEST"]
       }
+    },
+    "hypixelUpdates": {
+      "enabled": true,
+      "hypixelNews": true,
+      "statusUpdates": true,
+      "skyblockVersion": true
     }
   },
   "discord": {
@@ -77,7 +83,8 @@
       "officerChannel": "OFFICER_CHANNEL_ID",
       "loggingChannel": "LOGGING_CHANNEL_ID",
       "debugMode": false,
-      "debugChannel": "DEBUG_CHANNEL_ID"
+      "debugChannel": "DEBUG_CHANNEL_ID",
+      "allowedBots": ["BOT_USER_ID"]
     },
     "commands": {
       "checkPerms": true,
@@ -87,6 +94,7 @@
     },
     "other": {
       "messageMode": "minecraft",
+      "messageFormat": "{chatType} > {skin} {rank} {username} {guildRank}§f: {message}",
       "filterMessages": true,
       "joinMessage": true
     }
@@ -94,11 +102,16 @@
   "web": {
     "enabled": false,
     "endpoints": {
-      "invite": false
+      "invite": false,
+      "kick": false
     },
     "port": 1439
   },
   "database": {
     "path": "path/to/database"
+  },
+  "other": {
+    "autoUpdater": true,
+    "autoUpdaterInterval": 12
   }
 }

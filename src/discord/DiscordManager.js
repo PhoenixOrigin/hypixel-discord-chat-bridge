@@ -1,5 +1,6 @@
 const { Client, Collection, AttachmentBuilder, GatewayIntentBits } = require("discord.js");
 const CommunicationBridge = require("../contracts/CommunicationBridge.js");
+const { replaceVariables } = require("../contracts/helperFunctions.js");
 const messageToImage = require("../contracts/messageToImage.js");
 const MessageHandler = require("./handlers/MessageHandler.js");
 const StateHandler = require("./handlers/StateHandler.js");
@@ -20,7 +21,7 @@ class DiscordManager extends CommunicationBridge {
     this.commandHandler = new CommandHandler(this);
   }
 
-  async connect() {
+  connect() {
     global.client = new Client({
       intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
     });
@@ -76,14 +77,31 @@ class DiscordManager extends CommunicationBridge {
     return webhooks.first();
   }
 
-  async onBroadcast({ fullMessage, username, message, guildRank, chat, color = 1752220 }) {
+  async onBroadcast({ fullMessage, chat, chatType, username, rank, guildRank, message, color = 1752220 }) {
+    if (
+      (chat === undefined && chatType !== "debugChannel") ||
+      ((username === undefined || message === undefined) && chat !== "debugChannel")
+    ) {
+      return;
+    }
+
     const mode = chat === "debugChannel" ? "minecraft" : config.discord.other.messageMode.toLowerCase();
+    message = chat === "debugChannel" ? fullMessage : message;
     if (message !== undefined && chat !== "debugChannel") {
-      Logger.broadcastMessage(`${username} [${guildRank}]: ${message}`, `Discord`);
+      Logger.broadcastMessage(
+        `${username} [${guildRank.replace(/§[0-9a-fk-or]/g, "").replace(/^\[|\]$/g, "")}]: ${message}`,
+        `Discord`
+      );
+    }
+
+    // ? custom message format (config.discord.other.messageFormat)
+    if (config.discord.other.messageMode === "minecraft" && chat !== "debugChannel") {
+      message = replaceVariables(config.discord.other.messageFormat, { chatType, username, rank, guildRank, message });
     }
 
     const channel = await this.stateHandler.getChannel(chat || "Guild");
     if (channel === undefined) {
+      Logger.errorMessage(`Channel ${chat} not found!`);
       return;
     }
 
@@ -120,7 +138,7 @@ class DiscordManager extends CommunicationBridge {
           return;
         }
 
-        this.app.discord.webhook = await this.getWebhook(this.app.discord, channel);
+        this.app.discord.webhook = await this.getWebhook(this.app.discord, chatType);
         this.app.discord.webhook.send({
           content: message,
           username: username,
@@ -129,9 +147,13 @@ class DiscordManager extends CommunicationBridge {
         break;
 
       case "minecraft":
+        if (fullMessage.length === 0) {
+          return;
+        }
+
         await channel.send({
           files: [
-            new AttachmentBuilder(messageToImage(fullMessage), {
+            new AttachmentBuilder(await messageToImage(message, username), {
               name: `${username}.png`,
             }),
           ],
@@ -183,7 +205,6 @@ class DiscordManager extends CommunicationBridge {
 
   async onPlayerToggle({ fullMessage, username, message, color, channel }) {
     Logger.broadcastMessage(message, "Event");
-
     channel = await this.stateHandler.getChannel(channel);
     switch (config.discord.other.messageMode.toLowerCase()) {
       case "bot":
@@ -222,7 +243,7 @@ class DiscordManager extends CommunicationBridge {
       case "minecraft":
         await channel.send({
           files: [
-            new AttachmentBuilder(messageToImage(fullMessage), {
+            new AttachmentBuilder(await messageToImage(fullMessage), {
               name: `${username}.png`,
             }),
           ],
@@ -236,6 +257,10 @@ class DiscordManager extends CommunicationBridge {
   hexToDec(hex) {
     if (hex === undefined) {
       return 1752220;
+    }
+
+    if (typeof hex === "number") {
+      return hex;
     }
 
     return parseInt(hex.replace("#", ""), 16);
@@ -253,6 +278,10 @@ class DiscordManager extends CommunicationBridge {
         return part.length === 0 ? "" : part.replace(/@(everyone|here)/gi, "").trim() + " ";
       })
       .join("");
+  }
+
+  formatMessage(message, data) {
+    return replaceVariables(message, data);
   }
 }
 
