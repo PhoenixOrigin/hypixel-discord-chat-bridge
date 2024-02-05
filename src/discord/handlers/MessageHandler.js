@@ -9,6 +9,24 @@ class MessageHandler {
   }
 
   async onMessage(message) {
+    if (message.author.id === client.user.id || !this.shouldBroadcastMessage(message)) {
+      return;
+    }
+
+    const content = this.stripDiscordContent(message).trim();
+    if (content.length === 0) return;
+
+    const messageData = {
+      member: message.member.user,
+      channel: message.channel.id,
+      username: message.member.displayName,
+      message: content,
+      replyingTo: await this.fetchReply(message),
+    };
+
+    this.discord.broadcastMessage(messageData);
+    message.react("✅");
+
     try {
       if (message.author.id === client.user.id || !this.shouldBroadcastMessage(message)) {
         return;
