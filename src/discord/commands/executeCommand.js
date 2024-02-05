@@ -3,7 +3,7 @@ const { SuccessEmbed } = require("../../contracts/embedHandler.js");
 module.exports = {
   name: "execute",
   description: "Executes commands as the minecraft bot.",
-  moderatorOnly: true,
+  requiredRole: "admin",
   requiresBot: true,
   options: [
     {

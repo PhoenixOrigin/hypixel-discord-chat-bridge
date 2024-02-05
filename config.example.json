@@ -21,28 +21,12 @@
     },
     "API": {
       "hypixelAPIkey": "HYPIXEL_API_KEY",
-      "imgurAPIkey": "IMGUR_API_KEY"
+      "imgurAPIkey": "IMGUR_API_KEY",
+
     },
     "guildRequirements": {
       "enabled": false,
-      "autoAccept": false,
-      "requirements": {
-        "bedwarsStars": 0,
-        "bedwarsStarsWithFKDR": 0,
-        "bedwarsFKDR": 0,
-
-        "skywarsStars": 0,
-        "skywarsStarsWithKDR": 0,
-        "skywarsKDR": 0,
-
-        "duelsWins": 0,
-        "duelsWinsWithWLR": 0,
-        "duelsWLR": 0,
-
-        "senitherWeight": 0,
-        "lilyWeight": 0,
-        "skyblockLevel": 0
-      }
+      "autoAccept": false
     },
     "skyblockEventsNotifications": {
       "enabled": true,
@@ -86,21 +70,29 @@
     },
     "commands": {
       "checkPerms": true,
-      "commandRole": "COMMAND_ROLE_ID",
+      "mod": "MOD_ROLE_ID",
+      "admin": "ADMIN_ROLE_ID",
       "users": ["486155512568741900"]
     },
     "other": {
       "messageMode": "minecraft",
       "messageFormat": "{chatType} > {skin} {rank} {username} {guildRank}§f: {message}",
       "filterMessages": true,
-      "filterWords": ["dox", "doxx", "doxed", "doxxed", "doxing", "doxxing", "doxes", "doxxes", "zickles"],
+      "filterWords": ["dox", "doxx", "doxed", "doxxed", "doxing", "doxxing", "doxes", "doxxes", "zickles", "ip"],
       "joinMessage": true,
       "autoLimbo": false
     }
   },
   "web": {
     "enabled": false,
+    "endpoints": {
+      "invite": false,
+      "kick": false
+    },
     "port": 1439
+  },
+  "database": {
+    "path": "path/to/database"
   },
   "other": {
     "autoUpdater": true,

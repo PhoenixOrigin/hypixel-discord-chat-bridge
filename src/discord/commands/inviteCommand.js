@@ -3,7 +3,7 @@ const { SuccessEmbed } = require("../../contracts/embedHandler.js");
 module.exports = {
   name: "invite",
   description: "Invites the given user to the guild.",
-  moderatorOnly: true,
+  requiredRole: "mod",
   requiresBot: true,
   options: [
     {

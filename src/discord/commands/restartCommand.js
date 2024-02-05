@@ -4,7 +4,7 @@ const { Embed } = require("../../contracts/embedHandler.js");
 module.exports = {
   name: "restart",
   description: "Restarts the bot.",
-  moderatorOnly: true,
+  requiredRole: "admin",
 
   execute: async (interaction) => {
     const restartEmbed = new Embed(15548997, "Restarting...", "The bot is restarting. This might take few seconds.", {

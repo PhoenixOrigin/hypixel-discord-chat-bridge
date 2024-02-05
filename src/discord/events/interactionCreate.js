@@ -20,7 +20,11 @@ module.exports = {
           return;
         }
 
-        if (command.moderatorOnly === true && isModerator(interaction) === false) {
+        if (command.requiredRole === "admin" && isAdmin(interaction) === false) {
+          throw new HypixelDiscordChatBridgeError("You don't have permission to use this command.");
+        }
+
+        if (command.requiredRole === "mod" && isModerator(interaction) === false) {
           throw new HypixelDiscordChatBridgeError("You don't have permission to use this command.");
         }
 
@@ -35,9 +39,9 @@ module.exports = {
       console.log(error);
 
       const errrorMessage =
-        error instanceof HypixelDiscordChatBridgeError
-          ? ""
-          : "Please try again later. The error has been sent to the Developers.\n\n";
+          error instanceof HypixelDiscordChatBridgeError
+              ? ""
+              : "Please try again later. The error has been sent to the Developers.\n\n";
 
       const errorEmbed = new ErrorEmbed(`${errrorMessage}\`\`\`${error}\`\`\``);
 
@@ -51,7 +55,7 @@ module.exports = {
         const userID = interaction.user.id ?? "Unknown";
 
         const errorLog = new ErrorEmbed(
-          `Command: \`${commandName}\`\nOptions: \`${commandOptions}\`\nUser ID: \`${userID}\`\nUser: \`${username}\`\n\`\`\`${errorStack}\`\`\``
+            `Command: \`${commandName}\`\nOptions: \`${commandOptions}\`\nUser ID: \`${userID}\`\nUser: \`${username}\`\n\`\`\`${errorStack}\`\`\``
         );
         interaction.client.channels.cache.get(config.discord.channels.loggingChannel).send({
           content: `<@&${config.discord.commands.commandRole}>`,
@@ -75,8 +79,22 @@ function isModerator(interaction) {
   const userRoles = user.roles.cache.map((role) => role.id);
 
   if (
-    config.discord.commands.checkPerms === true &&
-    !(userRoles.includes(config.discord.commands.commandRole) || config.discord.commands.users.includes(user.id))
+      config.discord.commands.checkPerms === true &&
+      !(userRoles.includes(config.discord.commands.modRole) || config.discord.commands.users.includes(user.id))
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
+function isAdmin(interaction) {
+  const user = interaction.member;
+  const userRoles = user.roles.cache.map((role) => role.id);
+
+  if (
+      config.discord.commands.checkPerms === true &&
+      !(userRoles.includes(config.discord.commands.adminRole) || config.discord.commands.users.includes(user.id))
   ) {
     return false;
   }

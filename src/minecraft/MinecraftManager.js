@@ -74,8 +74,8 @@ class MinecraftManager extends CommunicationBridge {
       receivedMessage = receivedMessage.toString();
 
       if (
-        receivedMessage.includes(message) &&
-        (this.chatHandler.isGuildMessage(receivedMessage) || this.chatHandler.isOfficerMessage(receivedMessage))
+          receivedMessage.includes(message) &&
+          (this.chatHandler.isGuildMessage(receivedMessage) || this.chatHandler.isOfficerMessage(receivedMessage))
       ) {
         bot.removeListener("message", messageListener);
         successfullySent = true;
@@ -88,6 +88,7 @@ class MinecraftManager extends CommunicationBridge {
     setTimeout(() => {
       bot.removeListener("message", messageListener);
       if (successfullySent === true) {
+        discord.react("✔️");
         return;
       }
 

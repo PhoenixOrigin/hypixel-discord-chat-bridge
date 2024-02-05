@@ -3,7 +3,7 @@ const { SuccessEmbed } = require("../../contracts/embedHandler.js");
 module.exports = {
   name: "promote",
   description: "Promotes the given user by one guild rank.",
-  moderatorOnly: true,
+  requiredRole: "mod",
   requiresBot: true,
   options: [
     {

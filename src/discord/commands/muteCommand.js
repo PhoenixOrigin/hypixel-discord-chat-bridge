@@ -3,7 +3,7 @@ const { SuccessEmbed } = require("../../contracts/embedHandler.js");
 module.exports = {
   name: "mute",
   description: "Mutes the given user for a given amount of time.",
-  moderatorOnly: true,
+  requiredRole: "mod",
   requiresBot: true,
   options: [
     {

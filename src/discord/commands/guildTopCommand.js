@@ -41,12 +41,12 @@ module.exports = {
 
     const trimmedMessages = message.map((message) => message.trim()).filter((message) => message.includes("."));
     const description = trimmedMessages
-      .map((message) => {
-        const [position, , name, guildExperience] = message.split(" ");
+        .map((message) => {
+          const [position, , name, guildExperience] = message.split(" ");
 
-        return `\`${position}\` **${name}** - \`${guildExperience}\` Guild Experience\n`;
-      })
-      .join("");
+          return `\`${position}\` **${name}** - \`${guildExperience}\` Guild Experience\n`;
+        })
+        .join("");
 
     const embed = new Embed("#2ECC71", "Top 10 Guild Members", description);
 
