@@ -1,22 +1,31 @@
 const config = require("../../config.json");
-const sqlite3 = require('sqlite3');
+const axios = require("axios");
 
-const databasePath = config.database.path;
 async function checkBlacklist(uuid) {
     return new Promise((resolve, reject) => {
-        const database = new sqlite3.Database(databasePath);
-        const query = `SELECT * FROM "BANNED" WHERE uuid=?`;
+        const API_URL = config.API.url;
 
-        database.all(query, uuid, function(err, rows) {
-            console.log(rows);
-            if (err) {
-                console.log(err);
-                throw err;
-            } else {
-                resolve(rows.length > 0);
+        await axios.get(API_URL,
+            {
+                headers: {
+                    'Content-type': 'application/json'
+                }
             }
-            database.close();
-        });
+        );
+
+        let blacklisted = false;
+
+        axios.get(API_URL + `?uuid=${uuid}`)
+            .then(function (response) {
+                if (response.data.banned) {
+                    blacklisted = true;
+                }
+                resolve(blacklisted);
+            })
+            .catch(function (error) {
+                blacklisted = true;
+                resolve(blacklisted);
+            });
     });
 }
 

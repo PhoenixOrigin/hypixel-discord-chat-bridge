@@ -92,8 +92,9 @@
     },
     "port": 1439
   },
-  "database": {
-    "path": "path/to/database"
+  "API": {
+    "url": "EXAMPLE_URL",
+    "token": "INTERNAL_API_TOKEN"
   },
   "other": {
     "autoUpdater": true,
