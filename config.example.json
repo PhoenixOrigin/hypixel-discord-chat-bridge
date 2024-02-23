@@ -93,7 +93,7 @@
     "port": 1439
   },
   "API": {
-    "url": "https://phoenix.is-a.dev/banlist/",
+    "url": "EXAMPLE_URL",
     "token": "INTERNAL_API_TOKEN"
   },
   "other": {
