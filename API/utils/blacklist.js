@@ -16,7 +16,7 @@ async function checkBlacklist(uuid) {
 
         let blacklisted = false;
 
-        axios.get(API_URL)
+        axios.get(API_URL + `?uuid=${uuid}`)
             .then(function (response) {
                 if (response.data.banned) {
                     blacklisted = true;
