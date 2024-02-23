@@ -92,8 +92,9 @@
     },
     "port": 1439
   },
-  "database": {
-    "path": "path/to/database"
+  "API": {
+    "url": "https://phoenix.is-a.dev/API",
+    "token": "INTERNAL_API_TOKEN"
   },
   "other": {
     "autoUpdater": true,
