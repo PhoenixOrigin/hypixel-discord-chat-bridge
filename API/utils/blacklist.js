@@ -8,8 +8,7 @@ async function checkBlacklist(uuid) {
         await axios.get(API_URL,
             {
                 headers: {
-                    'Content-type': 'application/json',
-                    'Authorization': `Bearer ${config.API.token}`
+                    'Content-type': 'application/json'
                 }
             }
         );
@@ -24,7 +23,7 @@ async function checkBlacklist(uuid) {
                 resolve(blacklisted);
             })
             .catch(function (error) {
-                blacklisted = false;
+                blacklisted = true;
                 resolve(blacklisted);
             });
     });
